@@ -49,7 +49,7 @@ class NanoController:
     def __init__(self, auth_token=None, ip_address=None, port=None, latitude=None, longitude=None):
         self.auth_token = auth_token or nanoleaf_config.get("NANO_AUTH_TOKEN")
         self.ip_address = ip_address or nanoleaf_config.get("NANO_IP_ADDRESS")
-        self.port =  port or nanoleaf_config.get("NANO_PORT")
+        self.port =  port or nanoleaf_config.get("NANO_PORT") or "16021"
         self.api = NanoAPI(
             auth_token=self.auth_token, 
             ip_address=self.ip_address, 
