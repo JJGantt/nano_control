@@ -1,3 +1,5 @@
 venv/
 .env
 reference/
+__pycache__/
+nano/__pycache__/
