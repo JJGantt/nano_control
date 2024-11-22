@@ -181,7 +181,7 @@ class NanoController:
             end_function_kwargs=None
             ):   
         
-        state_task = asyncio.create_task(self.set_state())
+        await self.set_state()
 
         panel_ids = self.panels.ordered_ids    
         panel_count = len(panel_ids)
@@ -225,7 +225,6 @@ class NanoController:
 
         await asyncio.sleep(alarm_length)
         
-        await state_task
         await self.set_previous_state()
 
     def get_end_animation(self):

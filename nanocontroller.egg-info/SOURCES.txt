@@ -1,9 +1,10 @@
 LICENSE
+README.md
 pyproject.toml
-setup.py
 nano/__init__.py
 nano/api.py
 nano/nano.py
+nano/examples/examples.py
 nano/helpers/__init__.py
 nano/helpers/auth_generate.py
 nano/helpers/openmeteo.py
@@ -11,5 +12,4 @@ nano/helpers/weather_codes.py
 nanocontroller.egg-info/PKG-INFO
 nanocontroller.egg-info/SOURCES.txt
 nanocontroller.egg-info/dependency_links.txt
-nanocontroller.egg-info/requires.txt
 nanocontroller.egg-info/top_level.txt
