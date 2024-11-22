@@ -181,7 +181,7 @@ class NanoController:
             end_function_kwargs=None
             ):   
         
-        await self.set_state()
+        state_task = asyncio.create_task(self.set_state())
 
         panel_ids = self.panels.ordered_ids    
         panel_count = len(panel_ids)
@@ -225,6 +225,7 @@ class NanoController:
 
         await asyncio.sleep(alarm_length)
         
+        await state_task
         await self.set_previous_state()
 
     def get_end_animation(self):
@@ -299,7 +300,7 @@ class NanoController:
             },
             40: {
                 "start": (255, 255, 255),  # Bright white
-                "end": (200, 200, 200)     # Light white
+                "end": (128, 128, 128)     # Light white
             },
             50: {
                 "start": (0, 0, 255),      # Blue
@@ -359,7 +360,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
-    await nano.timer(20)
+    await nano.timer(15, alarm_length=3)
 
 if __name__ == "__main__":
     asyncio.run(main())
