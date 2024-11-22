@@ -22,7 +22,7 @@ Hold the on-off button for 5-7 seconds until the LED starts flashing in a patter
 
 Run this function to obtain auth_token during authorization window
 ```python
-from nano_control import get_token
+from nanocontroller import get_token
 
 get_token(
     ip address,     # Found on back of device, in app, or through network discovery tool 
@@ -37,7 +37,7 @@ get_token(
 ### Initializing the NanoController
 
 ```python
-from nano_control import NanoController
+from nanocontroller import NanoController
 
 nano = NanoController(
     ip_address="172.20.7.17",  # Found on the back of the device, in the app, or via a network scan.

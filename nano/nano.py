@@ -276,6 +276,8 @@ class NanoController:
         df = await self.get_weather_df(latitude, longitude)
         panels = len(self.panels.list)
 
+        print(df.head(50))
+
         precips = df.groupby(df.index // hour_interval)["precipitation_probability"].mean()[:panels]
         color_dict = { i : [(0, 0, 2.55 * precip, 10)] for i, precip in enumerate(precips) }
 
@@ -360,7 +362,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
-    await nano.timer(15, alarm_length=3)
+    await nano.set_precipitation(latitude=47, longitude=152)
 
 if __name__ == "__main__":
     asyncio.run(main())
