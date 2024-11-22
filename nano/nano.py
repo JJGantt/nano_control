@@ -181,6 +181,8 @@ class NanoController:
             end_function_kwargs=None
             ):   
         
+        await self.set_state()
+
         panel_ids = self.panels.ordered_ids    
         panel_count = len(panel_ids)
         seconds_per_panel = seconds / panel_count
@@ -243,6 +245,7 @@ class NanoController:
         return df
 
     async def set_hourly_forecast(self, latitude=None, longitude=None, sunrise=6, sunset=18):
+        await self.set_state()
         latitude = latitude or self.latitude
         longitude = longitude or self.longitude
         df = await self.get_weather_df(latitude, longitude)
@@ -266,6 +269,7 @@ class NanoController:
         await self.custom(color_dict)
 
     async def set_precipitation(self, hour_interval=1, latitude=None, longitude=None):
+        await self.set_state()
         latitude = latitude or self.latitude
         longitude = longitude or self.longitude
         df = await self.get_weather_df(latitude, longitude)
@@ -277,6 +281,7 @@ class NanoController:
         await self.custom(color_dict)
 
     async def set_temperature(self, hour_interval=1, latitude=None, longitude=None, gradient_dict=None):
+        await self.set_state()
         latitude = latitude or self.latitude
         longitude = longitude or self.longitude
         df = await self.get_weather_df(latitude, longitude)
@@ -354,7 +359,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
-    print(nano.panels)
+    await nano.timer(20)
 
 if __name__ == "__main__":
     asyncio.run(main())

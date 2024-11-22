@@ -58,16 +58,16 @@ nano.set_location(lattitude, longitude)
 
 - **Get states:**
   ```python
-  nano.get_brightness()          # Get current brightness level.
-  nano.get_effect()              # Get the currently active effect.
-  nano.get_effects_list()        # List available effects downloaded in the app.
-  nano.get_state()               # Retrieve all states of the panels.
+  await nano.get_brightness()          # Get current brightness level.
+  await nano.get_effect()              # Get the currently active effect.
+  await nano.get_effects_list()        # List available effects downloaded in the app.
+  await nano.get_state()               # Retrieve all states of the panels.
   ```
 
 - **Set states:**
   ```python
-  nano.set_brightness(50)        # Set brightness (0-100).
-  nano.set_effect("Aurora")      # Set a specific effect by name.
+  await nano.set_brightness(50)        # Set brightness (0-100).
+  await nano.set_effect("Aurora")      # Set a specific effect by name.
   ```
 
 ---
@@ -77,7 +77,7 @@ nano.set_location(lattitude, longitude)
 Customize the panel colors and effects programmatically:
 
 ```python
-nano.custom(color_dict, loop=True)
+await nano.custom(color_dict, loop=True)
 ```
 
 - **Input Format:**
@@ -115,7 +115,7 @@ nano.custom(color_dict, loop=True)
 Gradually transition panels from one color to another one by one over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
 
 ```python
-nano.timer(
+await nano.timer(
     duration=60,                  # Time in seconds (≥ total number of panels).
     start_color=(0, 0, 255),      # Default blue.
     end_color=(255, 174, 66),     # Default orange.
@@ -133,7 +133,7 @@ nano.timer(
 
 1. **Set location:**
    ```python
-   nano.set_location(latitude, longitude)
+   await nano.set_location(latitude, longitude)
    ```
 
 2. **Display hourly forecast:**
@@ -143,18 +143,18 @@ nano.timer(
    - weather_codes.py defines weather animations and can be customized 
 
    ```python
-   nano.set_hourly_forecast()
+   await nano.set_hourly_forecast()
    ```
 
 3. **Display precipitation levels:**
    Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and an unlit panel for 0% chance. 
    ```python
-   nano.set_precipitation(hour_interval=1)
+   await nano.set_precipitation(hour_interval=1)
    ```
 
 4. **Display temperature gradients:**
    Sets the panels to display the temperature per hour interval periosds. Defaults to one hour per panel.
-    Default color schemer defined by the dictionary:
+    Default color gradients defined by the dictionary:
     ```python
     gradient_dict = {
         0: {
@@ -191,7 +191,7 @@ nano.timer(
 
 
     ```python
-    nano.set_temperature(hour_interval=1, gradient_dict=None)
+    await nano.set_temperature(hour_interval=1, gradient_dict=None)
     ```
 
 ---
