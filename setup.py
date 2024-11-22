@@ -5,7 +5,7 @@ def parse_requirements(filename):
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
 setup(
-    name="nano_control", 
+    name="nanocontroller", 
     version="1.0.0",     
     packages=find_packages(),  
     install_requires=parse_requirements("requirements.txt"), 

@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: nanocontroller
+Version: 1.0.0
+Summary: NanoLeaf controller
+Home-page: https://github.com/JJGantt/nano_control
+Author: Jared Gantt
+Author-email: jaredgantt@gamil.com
+Requires-Python: >=3.6
+License-File: LICENSE
