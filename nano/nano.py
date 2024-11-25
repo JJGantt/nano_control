@@ -148,6 +148,11 @@ class NanoController:
         else:
             await self.set_effect(self.state.effect)
 
+    async def cancel_timer(self) -> None:
+        if self.timer_task and not self.timer_task.done():
+            self.timer_task.cancel()  
+            self.set_previous_state()
+
     async def set_brightness(self, brightness: int) -> None:
         await self.api.set_brightness(brightness)
 
