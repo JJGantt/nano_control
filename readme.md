@@ -42,7 +42,7 @@ from nano import NanoController
 nano = NanoController(
     ip_address="172.20.7.17",  # Found on the back of the device, in the app, or via a network scan.
     port="16021",              # Default port. Discovery recommended.
-    latitude=28.5383,          # Optional latitude, rewuired for weather functions.
+    latitude=28.5383,          # Optional latitude, required for weather functions.
     longitude=-81.3792         # Optional longitude, required for weather functions.
 )
 ```
@@ -112,7 +112,7 @@ await nano.custom(color_dict, loop=True)
 
 ### Timer Functionality
 
-Gradually transition panels from one color to another one by one over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
+Gradually transition panels from one color to another, one by one, over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
 
 ```python
 await nano.timer(
@@ -153,7 +153,7 @@ await nano.timer(
    ```
 
 4. **Display temperature gradients:**
-   Sets the panels to display the temperature per hour interval periosds. Defaults to one hour per panel.
+   Sets the panels to display the temperature per hour intervals. Defaults to one hour per panel.
     Default color gradients defined by the dictionary:
     ```python
     gradient_dict = {
@@ -208,7 +208,6 @@ Leverage the `nano.custom()` method to:
 - Create personalized status displays.
 
 ---
-
 ## Contributing
 
 Feel free to submit issues or pull requests on the [GitHub repository](https://github.com/your-repo/nanocontroller). Contributions to add new features or improve existing ones are always welcome.

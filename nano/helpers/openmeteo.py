@@ -17,7 +17,7 @@ async def openmeteo(latitude, longitude):
         "temperature_unit": "fahrenheit",
         "wind_speed_unit": "mph",
         "precipitation_unit": "inch",
-        "timezone": "America/New_York"
+        #"timezone": "America/New_York"
     }
     responses = openmeteo.weather_api(url, params=params)
 
