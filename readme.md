@@ -143,7 +143,13 @@ await nano.timer(
    - weather_codes.py defines weather animations and can be customized 
 
    ```python
-   await nano.set_hourly_forecast()
+   await nano.set_hourly_forecast(
+       latitude = None, 
+       longitude = None,                # If location has not been set at initialization or with .set_location() it must be provided here
+       sunrise = 6,                     # Weather effects varry based on if they occur during day or night. Daytime hours fall within (sunrise, sunset) exclusive. 
+       sunset = 18,
+       auto_update_time = None          
+   )
    ```
 
 3. **Display precipitation levels:**

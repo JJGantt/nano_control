@@ -102,7 +102,8 @@ class NanoController:
         self.latitude = latitude or 28.5383
         self.longitude = longitude or -81.3792
 
-        self.timer_task = None
+        self.hex_task = None
+        self.weather_task = None
 
     @property
     def base_url(self) -> str:
@@ -148,9 +149,9 @@ class NanoController:
         else:
             await self.set_effect(self.state.effect)
 
-    async def cancel_timer(self) -> None:
-        if self.timer_task and not self.timer_task.done():
-            self.timer_task.cancel()  
+    async def cancel_task(self) -> None:
+        if self.hex_task and not self.hex_task.done():
+            self.hex_task.cancel()  
             self.set_previous_state()
 
     async def set_brightness(self, brightness: int) -> None:
@@ -336,9 +337,9 @@ class NanoController:
     async def set_hourly_forecast(
             self, 
             latitude: float | None = None, 
-            longitude: float | None =None, 
+            longitude: float | None = None, 
             sunrise: int = 6, 
-            sunset: int = 18
+            sunset: int = 18,
     ) -> None:
         await self.set_state()
         latitude = latitude or self.latitude
@@ -371,7 +372,7 @@ class NanoController:
             self, 
             hour_interval: int = 1, 
             latitude: float | None = None, 
-            longitude: float | None = None
+            longitude: float | None = None,
     ) -> None:
         await self.set_state()
         latitude = latitude or self.latitude
@@ -389,7 +390,7 @@ class NanoController:
             hour_interval: int = 1, 
             latitude: float | None = None, 
             longitude: float | None = None, 
-            gradient_dict: dict | None = None
+            gradient_dict: dict | None = None,
     ) -> None:
         await self.set_state()
         latitude = latitude or self.latitude
@@ -399,6 +400,7 @@ class NanoController:
         panels = len(self.panels.list)
 
         temps = df.groupby(df.index // hour_interval)["temperature_2m"].mean()[:panels]
+        
         print(temps)
         #temps = [40, 50, 60, 75, 85, 100]
         #temps = [60, 62, 64, 68, 69.99]
@@ -417,11 +419,11 @@ class NanoController:
                 "end": (80, 90, 255)       # Slightly lighter blue
             },
             60: {
-                "start": (150, 0, 255),    # Purple
-                "end": (100, 0, 175)      # Duller purple
+                "start": (125, 0, 175),    # Purple
+                "end": (150, 0, 255)      # Duller purple
             },
             70: {
-                "start": (0, 255, 90),     # Aqua
+                "start": (0, 240, 100),     # Aqua
                 "end": (0, 255, 190)       # Slightly bluer aqua
             },
             80: {
@@ -473,6 +475,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
+    await nano.set_temperature(4)
 
 
 
