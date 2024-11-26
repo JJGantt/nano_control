@@ -148,7 +148,6 @@ await nano.timer(
        longitude = None,                # If location has not been set at initialization or with .set_location() it must be provided here
        sunrise = 6,                     # Weather effects varry based on if they occur during day or night. Daytime hours fall within (sunrise, sunset) exclusive. 
        sunset = 18,
-       auto_update_time = None          
    )
    ```
 

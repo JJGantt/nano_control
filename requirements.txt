@@ -37,7 +37,7 @@ platformdirs==4.3.6
 propcache==0.2.0
 Pygments==2.18.0
 pyproject_hooks==1.2.0
-python-dateutil==2.9.0.post0
+python-dateutil==2.9.0.post0 
 python-dotenv==1.0.1
 pytz==2024.2
 readme_renderer==44.0

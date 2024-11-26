@@ -3,5 +3,5 @@ venv/
 reference/
 /__pycache__/
 **/__pycache__/
-/examples
+examples/
 
