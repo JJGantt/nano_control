@@ -116,14 +116,14 @@ Gradually transition panels from one color to another, one by one, over a define
 
 ```python
 await nano.timer(
-    duration=60,                  # Time in seconds (≥ total number of panels).
-    start_color=(0, 0, 255),      # Default blue.
-    end_color=(255, 174, 66),     # Default orange.
-    alarm_length=10,              # Alarm duration in seconds.
-    alarm_brightness=100,         # Full brightness for the alarm.
-    end_animation=None,           # Custom `color_dict` for end effect. Defaults to quckly cycling through random colors.
-    end_function=None,            # Optional async function to execute during end_animation
-    end_function_kwargs=None      # Arguments for the end function.
+    duration = 60,                  # Required - Time in seconds (≥ total number of panels).
+    start_color = BLUE,             # Default blue.
+    end_color = ORANGE,             # Default orange.
+    alarm_length = 10,              # Alarm duration in seconds.
+    alarm_brightness = 100,         # Full brightness for the alarm.
+    end_animation = None,           # Custom `color_dict` for end effect. Defaults to quckly cycling through random colors.
+    end_function = None,            # Optional async function to execute during end_animation
+    end_function_kwargs = None      # Arguments for the end function.
 )
 ```
 
@@ -140,7 +140,7 @@ await nano.timer(
    Each panel represents an hour. For example:
    - Heavy rain in 3 hours: Panel 3 quickly flashes blues and whites.
    - Overcast: Panel slowly transitions between grey tones.
-   - weather_codes.py defines weather animations and can be customized 
+   - weather_codes.py defines weather animations and can be customized. Is not fully optimized yet.   
 
    ```python
    await nano.set_hourly_forecast(
@@ -152,9 +152,15 @@ await nano.timer(
    ```
 
 3. **Display precipitation levels:**
-   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and an unlit panel for 0% chance. 
+   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and yellow for 0%. These colors are customizable. 
    ```python
-   await nano.set_precipitation(hour_interval=1)
+   await nano.set_precipitation(
+            hour_interval = 1, 
+            latitude = None,                  # Location necesarry if not already set
+            longitude = None,
+            max_color = BLUE,                 # Many standard colors are predefined
+            min_color = YELLOW
+    )
    ```
 
 4. **Display temperature gradients:**
@@ -171,12 +177,13 @@ await nano.timer(
             "end": (200, 200, 200)     # Light white
         },
         50: {
-            "start": (0, 0, 255),      # Blue
-            "end": (80, 90, 255)       # lighter blue
+            "start": (125, 0, 175),    # Purple
+            "end": (150, 0, 255)       # Duller purple
         },
         60: {
-            "start": (255, 0, 255),    # Purple
-            "end": (110, 90, 200)      # Duller purple
+            "start": (0, 0, 255),      # Blue
+            "end": (80, 90, 255)       # Slightly lighter blue
+        },
         },
         70: {
             "start": (0, 255, 90),     # Aqua
@@ -196,7 +203,12 @@ await nano.timer(
 
 
     ```python
-    await nano.set_temperature(hour_interval=1, gradient_dict=None)
+    await nano.set_temperature(
+            hour_interval = 1,       
+            latitude = None, 
+            longitude = None, 
+            gradient_dict = None,
+    )
     ```
 
 ---

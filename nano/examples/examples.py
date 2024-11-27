@@ -95,12 +95,12 @@ async def main():
             "end": (200, 200, 200)     # Light white
         },
         50: {
-            "start": (0, 0, 255),      # Blue
-            "end": (80, 90, 255)       # lighter blue
+                "start": (125, 0, 175),    # Purple
+                "end": (150, 0, 255)       # Duller purple
         },
         60: {
-            "start": (255, 0, 255),    # Purple
-            "end": (110, 90, 200)      # Duller purple
+            "start": (0, 0, 255),      # Blue
+            "end": (80, 90, 255)       # Slightly lighter blue
         },
         70: {
             "start": (0, 255, 90),     # Aqua

@@ -13,8 +13,6 @@ from datetime import datetime
 from .helpers.colors import *
 
 
-from .helpers.auth_generate import get_token
-
 load_dotenv()
 
 nanoleaf_config = {
@@ -215,10 +213,6 @@ class NanoController:
         return transformed_color_dict       
 
 
-
-
-
-    
     async def custom(
             self, 
             color_dict: dict, 
@@ -355,16 +349,20 @@ class NanoController:
         hours = [(current_hour + i) % 24 for i in range(panels)]
         is_night = [0 if hour > sunrise and hour < sunset else 1 for hour in hours]
 
-        print(is_night)
 
         codes = df["weather_code"][:panels].to_list()
         codes = [int(code) for code in codes]
+
+        is_night = [0, 0, 0, 0, 0, 1]
+        codes = [0, 3, 51, 55, 61, 82]
 
         color_dict = {}
         for n in range(panels):
             code_array = weather_codes[codes[n]][is_night[n]].copy()
             shuffle(code_array)
             color_dict[n] = code_array 
+
+        print(color_dict)
 
         await self.custom(color_dict)
 
@@ -373,6 +371,8 @@ class NanoController:
             hour_interval: int = 1, 
             latitude: float | None = None, 
             longitude: float | None = None,
+            max_color: tuple[int, int, int] = BLUE,
+            min_color: tuple[int, int, int] = YELLOW
     ) -> None:
         await self.set_state()
         latitude = latitude or self.latitude
@@ -381,7 +381,22 @@ class NanoController:
         panels = len(self.panels.list)
 
         precips = df.groupby(df.index // hour_interval)["precipitation_probability"].mean()[:panels]
-        color_dict = { i : [(0, 0, 2.55 * precip, 10)] for i, precip in enumerate(precips) }
+
+        precips = [0, 30, 60, 100, 90, 25]
+
+        r0, g0, b0 = min_color
+        r1, g1, b1 = max_color
+
+        
+        color_dict = { 
+            i : [(
+                r0 + precip/100 * (r1 - r0),  
+                g0 + precip/100 * (g1 - g0), 
+                b0 + precip/100 * (b1 - b0),
+                10
+            )] 
+            for i, precip in enumerate(precips) 
+        }
 
         await self.custom(color_dict)
 
@@ -401,9 +416,9 @@ class NanoController:
 
         temps = df.groupby(df.index // hour_interval)["temperature_2m"].mean()[:panels]
         
-        print(temps)
+        #print(temps)
         #temps = [40, 50, 60, 75, 85, 100]
-        #temps = [60, 62, 64, 68, 69.99]
+        #temps = [45, 52, 58, 62, 68, 75]
 
         gradient_dict = gradient_dict or {
             0: {
@@ -415,16 +430,16 @@ class NanoController:
                 "end": (128, 128, 128)     # Light white
             },
             50: {
+                "start": (125, 0, 175),    # Purple
+                "end": (150, 0, 255)       # Duller purple
+            },
+            60: {
                 "start": (0, 0, 255),      # Blue
                 "end": (80, 90, 255)       # Slightly lighter blue
             },
-            60: {
-                "start": (125, 0, 175),    # Purple
-                "end": (150, 0, 255)      # Duller purple
-            },
             70: {
                 "start": (0, 240, 100),     # Aqua
-                "end": (0, 255, 190)       # Slightly bluer aqua
+                "end": (0, 255, 190)        # Slightly bluer aqua
             },
             80: {
                 "start": (255, 255, 0),    # Bright yellow
@@ -475,9 +490,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
-    await nano.set_temperature(4)
-
-
+    await nano.set_precipitation(4)
 
 if __name__ == "__main__":
     asyncio.run(main())
