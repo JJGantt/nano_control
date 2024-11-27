@@ -97,8 +97,8 @@ class NanoController:
         self.color_dict = {i: [(0, 0, 0, 1)] for i in range(len(self.panels.list))}
         self.state = NanoState(color_dict=self.color_dict)
 
-        self.latitude = latitude or 28.5383
-        self.longitude = longitude or -81.3792
+        self.latitude = latitude or nanoleaf_config.get("NANO_LATITUDE")
+        self.longitude = longitude or nanoleaf_config.get("NANO_LONGITUDE") 
 
         self.hex_task = None
         self.weather_task = None
@@ -489,7 +489,7 @@ class NanoController:
 
 async def main():
     nano = NanoController()
-    await nano.set_precipitation(4)
+    await nano.set_temperature()
 
 if __name__ == "__main__":
     asyncio.run(main())

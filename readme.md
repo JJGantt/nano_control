@@ -46,6 +46,22 @@ nano = NanoController(
     longitude=-81.3792         # Optional longitude, required for weather functions.
 )
 ```
+
+or create a .env file 
+```env
+NANO_AUTH_TOKEN=
+NANO_IP_ADDRESS=                # Strings
+NANO_PORT=
+
+NANO_LATITUDE =                 # Floats
+NANO_LONGITUDE = 
+```
+and just
+```python
+from nano import NanoController
+
+nano = NanoController()
+```
 Location can be updated at any point after initialization with:
 ```python
 nano.set_location(lattitude, longitude)

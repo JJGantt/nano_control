@@ -1,4 +1,4 @@
-from nano import NanoController
+from nanocontroller import NanoController
 from helpers.auth_generate import get_token
 import asyncio
 
