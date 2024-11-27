@@ -382,12 +382,11 @@ class NanoController:
 
         precips = df.groupby(df.index // hour_interval)["precipitation_probability"].mean()[:panels]
 
-        precips = [0, 30, 60, 100, 90, 25]
+        #precips = [0, 30, 60, 100, 90, 25]
 
         r0, g0, b0 = min_color
         r1, g1, b1 = max_color
 
-        
         color_dict = { 
             i : [(
                 r0 + precip/100 * (r1 - r0),  
