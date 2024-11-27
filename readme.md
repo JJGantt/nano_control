@@ -2,12 +2,12 @@
 
 ## Overview
 
-The NanoController package allows you to interface with Nanoleaf devices, providing functionality for controlling individual lights programmatically, creating custom effects, setting timers, and displaying weather information. The package supports advanced features such as custom weather visualization, dynamic notifications, and more.
+The nanocontroller package allows you to interface with Nanoleaf devices, providing functionality for controlling individual lights programmatically, setting timers, and displaying weather information. 
 
 ---
 
 ## Installation
-
+ 
 ```bash
 pip install nanocontroller
 ```
@@ -22,7 +22,7 @@ Hold the on-off button for 5-7 seconds until the LED starts flashing in a patter
 
 Run this function to obtain auth_token during authorization window
 ```python
-from nano import get_token
+from nanocontroller import get_token
 
 get_token(
     ip address,     # Found on back of device, in app, or through network discovery tool 
@@ -37,11 +37,12 @@ get_token(
 ### Initializing the NanoController
 
 ```python
-from nano import NanoController
+from nanocontroller import NanoController
 
 nano = NanoController(
+    auth_token="sdg7648t24ih"  # Obtained from "get_token"
     ip_address="172.20.7.17",  # Found on the back of the device, in the app, or via a network scan.
-    port="16021",              # Default port. Discovery recommended.
+    port="16021",              # Default port is 16021. Discovery recommended.
     latitude=28.5383,          # Optional latitude, required for weather functions.
     longitude=-81.3792         # Optional longitude, required for weather functions.
 )
@@ -83,7 +84,7 @@ nano.set_location(lattitude, longitude)
 - **Set states:**
   ```python
   await nano.set_brightness(50)        # Set brightness (0-100).
-  await nano.set_effect("Aurora")      # Set a specific effect by name.
+  await nano.set_effect("Cocoa Beach")      # Set a specific effect by name.
   ```
 
 ---
@@ -126,15 +127,19 @@ await nano.custom(color_dict, loop=True)
   ```
 ---
 
-### Timer Functionality
+### Timer 
 
-Gradually transition panels from one color to another, one by one, over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
+![Timer](nanocontroller/examples/IMG_2573.jpeg)
+
+Gradually transition panels from one color to another, one by one, over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom". Accepts an optional function to execute at the end of the timer alongside the ending animation on the panels:
+
+[Usage demonstration](https://drive.google.com/file/d/1lNFXadyBaEw3cxatC6kpN1qZ_msOE1W1/view?usp=sharing)
 
 ```python
 await nano.timer(
     duration = 60,                  # Required - Time in seconds (≥ total number of panels).
     start_color = BLUE,             # Default blue.
-    end_color = ORANGE,             # Default orange.
+    end_color = WHITE,              # Default white.
     alarm_length = 10,              # Alarm duration in seconds.
     alarm_brightness = 100,         # Full brightness for the alarm.
     end_animation = None,           # Custom `color_dict` for end effect. Defaults to quckly cycling through random colors.
@@ -142,6 +147,8 @@ await nano.timer(
     end_function_kwargs = None      # Arguments for the end function.
 )
 ```
+
+[Application](https://drive.google.com/file/d/1lNFXadyBaEw3cxatC6kpN1qZ_msOE1W1/view?usp=sharing)
 
 ---
 
@@ -156,7 +163,7 @@ await nano.timer(
    Each panel represents an hour. For example:
    - Heavy rain in 3 hours: Panel 3 quickly flashes blues and whites.
    - Overcast: Panel slowly transitions between grey tones.
-   - weather_codes.py defines weather animations and can be customized. Is not fully optimized yet.   
+   - weather_codes.py defines weather animations and can be customized. It is not fully optimized yet so edit it how you like.   
 
    ```python
    await nano.set_hourly_forecast(
@@ -168,7 +175,10 @@ await nano.timer(
    ```
 
 3. **Display precipitation levels:**
-   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and yellow for 0%. These colors are customizable. 
+
+   ![Precipitation](nanocontroller/examples/IMG_2566.jpeg)
+    
+   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and yellow for 0%. These colors are customizable. The image above represents (starting from the bottom): 0%, 30%, 60%, 100%, 90%, 25%.
    ```python
    await nano.set_precipitation(
             hour_interval = 1, 
@@ -180,6 +190,9 @@ await nano.timer(
    ```
 
 4. **Display temperature gradients:**
+
+   ![Temperature](nanocontroller/examples/IMG_2550.jpeg)
+
    Sets the panels to display the temperature per hour intervals. Defaults to one hour per panel.
     Default color gradients defined by the dictionary:
     ```python
@@ -190,27 +203,26 @@ await nano.timer(
         },
         40: {
             "start": (255, 255, 255),  # Bright white
-            "end": (200, 200, 200)     # Light white
+            "end": (128, 128, 128)     # Light white
         },
         50: {
-            "start": (125, 0, 175),    # Purple
-            "end": (150, 0, 255)       # Duller purple
+            "start": (90, 0, 140),    # darker purple
+            "end": (150, 50, 255)      # purple
         },
         60: {
             "start": (0, 0, 255),      # Blue
-            "end": (80, 90, 255)       # Slightly lighter blue
-        },
+            "end": (40, 90, 255)       # Slightly lighter blue
         },
         70: {
-            "start": (0, 255, 90),     # Aqua
-            "end": (0, 255, 190)       # Slightly bluer aqua
+            "start": (0, 255, 0),      # Green
+            "end": (90, 255, 60)       # Yellowish green
         },
         80: {
-            "start": (255, 255, 0),    # Bright yellow
-            "end": (255, 100, 0)       # Reddish yellow
+            "start": (255, 255, 0),    # Yellow
+            "end": (255, 0, 0)         # Red
         },
         100: {
-            "start": (255, 60, 0),     # Bright red-orange
+            "start": (255, 0, 0),      # Red
             "end": (255, 0, 0)         # Red
         }
     }

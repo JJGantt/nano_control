@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: nanocontroller
-Version: 1.0.1
+Version: 1.0.2
 Summary: NanoLeaf controller
 Author-email: Jared Gantt <jaredgantt@gmail.com>
 License: MIT
@@ -9,6 +9,15 @@ Keywords: nanoleaf
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: openmeteo_requests==1.3.0
+Requires-Dist: numpy==2.1.3
+Requires-Dist: openmeteo_sdk==1.18.0
+Requires-Dist: pandas==2.2.3
+Requires-Dist: python-dotenv==1.0.1
+Requires-Dist: httpx==0.27.2
+Requires-Dist: requests==2.32.3
+Requires-Dist: retry-requests==2.0.0
+Requires-Dist: requests-cache==1.2.1
 
 # NanoController Python Package
 
@@ -54,9 +63,25 @@ from nano import NanoController
 nano = NanoController(
     ip_address="172.20.7.17",  # Found on the back of the device, in the app, or via a network scan.
     port="16021",              # Default port. Discovery recommended.
-    latitude=28.5383,          # Optional latitude, rewuired for weather functions.
+    latitude=28.5383,          # Optional latitude, required for weather functions.
     longitude=-81.3792         # Optional longitude, required for weather functions.
 )
+```
+
+or create a .env file 
+```env
+NANO_AUTH_TOKEN=
+NANO_IP_ADDRESS=                # Strings
+NANO_PORT=
+
+NANO_LATITUDE =                 # Floats
+NANO_LONGITUDE = 
+```
+and just
+```python
+from nano import NanoController
+
+nano = NanoController()
 ```
 Location can be updated at any point after initialization with:
 ```python
@@ -124,18 +149,18 @@ await nano.custom(color_dict, loop=True)
 
 ### Timer Functionality
 
-Gradually transition panels from one color to another one by one over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
+Gradually transition panels from one color to another, one by one, over a defined time. Follows the set ordering of panels, defaulting to "top_to_bottom":
 
 ```python
 await nano.timer(
-    duration=60,                  # Time in seconds (≥ total number of panels).
-    start_color=(0, 0, 255),      # Default blue.
-    end_color=(255, 174, 66),     # Default orange.
-    alarm_length=10,              # Alarm duration in seconds.
-    alarm_brightness=100,         # Full brightness for the alarm.
-    end_animation=None,           # Custom `color_dict` for end effect. Defaults to quckly cycling through random colors.
-    end_function=None,            # Optional async function to execute during end_animation
-    end_function_kwargs=None      # Arguments for the end function.
+    duration = 60,                  # Required - Time in seconds (≥ total number of panels).
+    start_color = BLUE,             # Default blue.
+    end_color = ORANGE,             # Default orange.
+    alarm_length = 10,              # Alarm duration in seconds.
+    alarm_brightness = 100,         # Full brightness for the alarm.
+    end_animation = None,           # Custom `color_dict` for end effect. Defaults to quckly cycling through random colors.
+    end_function = None,            # Optional async function to execute during end_animation
+    end_function_kwargs = None      # Arguments for the end function.
 )
 ```
 
@@ -152,20 +177,31 @@ await nano.timer(
    Each panel represents an hour. For example:
    - Heavy rain in 3 hours: Panel 3 quickly flashes blues and whites.
    - Overcast: Panel slowly transitions between grey tones.
-   - weather_codes.py defines weather animations and can be customized 
+   - weather_codes.py defines weather animations and can be customized. Is not fully optimized yet.   
 
    ```python
-   await nano.set_hourly_forecast()
+   await nano.set_hourly_forecast(
+       latitude = None, 
+       longitude = None,                # If location has not been set at initialization or with .set_location() it must be provided here
+       sunrise = 6,                     # Weather effects varry based on if they occur during day or night. Daytime hours fall within (sunrise, sunset) exclusive. 
+       sunset = 18,
+   )
    ```
 
 3. **Display precipitation levels:**
-   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and an unlit panel for 0% chance. 
+   Sets the panels to display precipitaion level over "hour_interval" periods. Defaults to one hour per panel. Precipitation is represented on a gradient from the brightest blue for 100% chance and yellow for 0%. These colors are customizable. 
    ```python
-   await nano.set_precipitation(hour_interval=1)
+   await nano.set_precipitation(
+            hour_interval = 1, 
+            latitude = None,                  # Location necesarry if not already set
+            longitude = None,
+            max_color = BLUE,                 # Many standard colors are predefined
+            min_color = YELLOW
+    )
    ```
 
 4. **Display temperature gradients:**
-   Sets the panels to display the temperature per hour interval periosds. Defaults to one hour per panel.
+   Sets the panels to display the temperature per hour intervals. Defaults to one hour per panel.
     Default color gradients defined by the dictionary:
     ```python
     gradient_dict = {
@@ -178,12 +214,13 @@ await nano.timer(
             "end": (200, 200, 200)     # Light white
         },
         50: {
-            "start": (0, 0, 255),      # Blue
-            "end": (80, 90, 255)       # lighter blue
+            "start": (125, 0, 175),    # Purple
+            "end": (150, 0, 255)       # Duller purple
         },
         60: {
-            "start": (255, 0, 255),    # Purple
-            "end": (110, 90, 200)      # Duller purple
+            "start": (0, 0, 255),      # Blue
+            "end": (80, 90, 255)       # Slightly lighter blue
+        },
         },
         70: {
             "start": (0, 255, 90),     # Aqua
@@ -203,7 +240,12 @@ await nano.timer(
 
 
     ```python
-    await nano.set_temperature(hour_interval=1, gradient_dict=None)
+    await nano.set_temperature(
+            hour_interval = 1,       
+            latitude = None, 
+            longitude = None, 
+            gradient_dict = None,
+    )
     ```
 
 ---
@@ -220,7 +262,6 @@ Leverage the `nano.custom()` method to:
 - Create personalized status displays.
 
 ---
-
 ## Contributing
 
 Feel free to submit issues or pull requests on the [GitHub repository](https://github.com/your-repo/nanocontroller). Contributions to add new features or improve existing ones are always welcome.

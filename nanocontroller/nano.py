@@ -12,7 +12,6 @@ import pandas as pd
 from datetime import datetime
 from .helpers.colors import *
 
-
 load_dotenv()
 
 nanoleaf_config = {
@@ -141,7 +140,6 @@ class NanoController:
         
     async def set_previous_state(self) -> None:
         await self.set_brightness(self.state.brightness)
-        print(f'effect: {self.state.effect}')
         if self.state.effect == "*Dynamic*":
             await self.custom(self.state.color_dict)
         else:
@@ -248,7 +246,7 @@ class NanoController:
     async def timer(self, 
             seconds: int, 
             start_color: tuple[int, int, int] = BLUE, 
-            end_color: tuple[int, int, int] = ORANGE, 
+            end_color: tuple[int, int, int] = WHITE, 
             alarm_length: int = 10,
             alarm_brightness: int = 100,
             end_animation: dict | None = None,
@@ -343,26 +341,21 @@ class NanoController:
         now = datetime.now()
         current_hour = now.hour if now.minute < 30 else now.hour + 1
 
-        print(now, current_hour)
-
         panels = len(self.panels.list)
         hours = [(current_hour + i) % 24 for i in range(panels)]
         is_night = [0 if hour > sunrise and hour < sunset else 1 for hour in hours]
 
-
         codes = df["weather_code"][:panels].to_list()
         codes = [int(code) for code in codes]
 
-        is_night = [0, 0, 0, 0, 0, 1]
-        codes = [0, 3, 51, 55, 61, 82]
+        #is_night = [0, 0, 0, 0, 0, 1]
+        #codes = [0, 3, 51, 55, 61, 82]
 
         color_dict = {}
         for n in range(panels):
             code_array = weather_codes[codes[n]][is_night[n]].copy()
             shuffle(code_array)
             color_dict[n] = code_array 
-
-        print(color_dict)
 
         await self.custom(color_dict)
 
@@ -416,7 +409,7 @@ class NanoController:
         temps = df.groupby(df.index // hour_interval)["temperature_2m"].mean()[:panels]
         
         #print(temps)
-        #temps = [40, 50, 60, 75, 85, 100]
+        #temps = [50, 55, 59.9, 62, 68, 69.9]
         #temps = [45, 52, 58, 62, 68, 75]
 
         gradient_dict = gradient_dict or {
@@ -429,23 +422,23 @@ class NanoController:
                 "end": (128, 128, 128)     # Light white
             },
             50: {
-                "start": (125, 0, 175),    # Purple
-                "end": (150, 0, 255)       # Duller purple
+                "start": (90, 0, 140),    # darker purple
+                "end": (150, 50, 255)      # purple
             },
             60: {
                 "start": (0, 0, 255),      # Blue
-                "end": (80, 90, 255)       # Slightly lighter blue
+                "end": (40, 90, 255)       # Slightly lighter blue
             },
             70: {
-                "start": (0, 240, 100),     # Aqua
-                "end": (0, 255, 190)        # Slightly bluer aqua
+                "start": (0, 255, 0),      # Green
+                "end": (90, 255, 60)       # Yellowish green
             },
             80: {
-                "start": (255, 255, 0),    # Bright yellow
-                "end": (255, 100, 0)       # Reddish yellow
+                "start": (255, 255, 0),    # Yellow
+                "end": (255, 0, 0)         # Red
             },
             100: {
-                "start": (255, 60, 0),     # Bright red-orange
+                "start": (255, 0, 0),      # Red
                 "end": (255, 0, 0)         # Red
             }
         }
@@ -488,8 +481,7 @@ class NanoController:
         return [(r, g, b, 10)]
 
 async def main():
-    nano = NanoController()
-    await nano.set_temperature()
+    pass
 
 if __name__ == "__main__":
     asyncio.run(main())
